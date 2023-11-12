@@ -26,7 +26,7 @@
           xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 //callout();
-                insertImage()
+                insertImageWaterFall()
               try{
                 var resp = this.responseText;
               }
@@ -47,18 +47,22 @@
             var intäkt = document.getElementById("intäkt").value;
             var underhållsutrymme = document.getElementById("underhållsutrymme").value;
             var driftskostnad = document.getElementById("driftskostnad").value;
+            var amortering2 = document.getElementById("amortering2").value;
+            var finansiellaKostnader2 = document.getElementById("finansiellaKostnader2").value;
             var data = { "totalLån": totalLån,
                        "totalYta": totalYta,
                        "boarea": boarea,
                        "intäkt": intäkt,
                        "underhållsutrymme": underhållsutrymme,
                        "driftskostnad": driftskostnad,
+                       "amortering2": amortering2,
+                       "finansiellaKostnader2": finansiellaKostnader2
                      }
           var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 //callout();
-                //insertImageNyckelTal()
+                insertImageNyckelTal()
               try{
                 var resp = this.responseText;
               }
@@ -78,22 +82,61 @@
             })
             .done(function (server_response) {
             var result = server_response
-                var element = document.getElementById("result");
-                element.innerHTML = "Result: " + result;
+            var element = document.getElementById("result");
+            element.innerHTML = "Result: " + result;
             })
         };
       </script>
       <script>
-        function insertImage() {
-            var graphs = document.getElementById("graphs");
+        function insertImageWaterFall() {
+            var graphs = document.getElementById("waterfallGraphs");
             graphs.innerHTML = "";
-            var imgElement = document.createElement("img");
+            var waterfall = document.createElement("img");
             var uniqueParam = new Date().getTime();
-            imgElement.src = "static/images/fig1.png?v=" + uniqueParam;
-            imgElement.alt = "Description of the image";
-            graphs.appendChild(imgElement);
+            waterfall.src = "static/images/waterfall.png?v=" + uniqueParam;
+            waterfall.alt = "Description of the image";
+            graphs.appendChild(waterfall);
         }
     </script>
+    <script>
+      function insertImageNyckelTal() {
+          var graphs = document.getElementById("nyckelTalGraphs");
+          graphs.innerHTML = "";
+          var uniqueParam = new Date().getTime();
+          var lånPerkvmTotalYta = document.createElement("img");
+          lånPerkvmTotalYta.src = "static/images/lånPerkvmTotalYta.png?v=" + uniqueParam;
+          lånPerkvmTotalYta.alt = "Description of the image";
+          graphs.appendChild(lånPerkvmTotalYta);
+          var lånPerkvmBoarea = document.createElement("img");
+          lånPerkvmBoarea.src = "static/images/lånPerkvmBoarea.png?v=" + uniqueParam;
+          lånPerkvmBoarea.alt = "Description of the image";
+          graphs.appendChild(lånPerkvmBoarea);
+          var skuldkvot = document.createElement("img");
+          skuldkvot.src = "static/images/skuldkvot.png?v=" + uniqueParam;
+          skuldkvot.alt = "Description of the image";
+          graphs.appendChild(skuldkvot);
+          var UHutrymmeProcent = document.createElement("img");
+          UHutrymmeProcent.src = "static/images/UHutrymmeProcent.png?v=" + uniqueParam;
+          UHutrymmeProcent.alt = "Description of the image";
+          graphs.appendChild(UHutrymmeProcent);
+          var UHutrymmePerTotalYta = document.createElement("img");
+          UHutrymmePerTotalYta.src = "static/images/UHutrymmePerTotalYta.png?v=" + uniqueParam;
+          UHutrymmePerTotalYta.alt = "Description of the image";
+          graphs.appendChild(UHutrymmePerTotalYta);
+          var driftskostnadPerKvm = document.createElement("img");
+          driftskostnadPerKvm.src = "static/images/driftskostnadPerKvm.png?v=" + uniqueParam;
+          driftskostnadPerKvm.alt = "Description of the image";
+          graphs.appendChild(driftskostnadPerKvm);
+          var finansiellUtgift = document.createElement("img");
+          finansiellUtgift.src = "static/images/finansiellUtgift.png?v=" + uniqueParam;
+          finansiellUtgift.alt = "Description of the image";
+          graphs.appendChild(finansiellUtgift);
+          var räntekostnadProcent = document.createElement("img");
+          räntekostnadProcent.src = "static/images/räntekostnadProcent.png?v=" + uniqueParam;
+          räntekostnadProcent.alt = "Description of the image";
+          graphs.appendChild(räntekostnadProcent);
+      }
+  </script>
 </head>
 <body>
     <h1>Är din bostadsrättsföreningens ekonomi i balans?</h1>
@@ -122,7 +165,7 @@
     </form>
 
     <!-- <p id = "result"> Result: </p> -->
-    <div id="graphs"></div>
+    <div id="waterfallGraphs"></div>
 
     <p> Stöd för analys: Referens avgiftsuttag bör vara klart över 0 kkr, annars skall en avgiftshöjning beaktas.
       *Jämförelsestörande kostnader är tex större engångskostnader såsom investeringar och större underhåll/reparation enligt underhållsplan.
@@ -138,12 +181,18 @@
       <input type="text" id="boarea" name="boarea"><br>
       <label for="fname">Intäkt (tusentals kronor):</label><br>
       <input type="text" id="intäkt" name="intäkt"><br>
-      <label for="fname">Underhållsutrymme (alla underhålls- och reparationskostnader, exklusive endast jämförelsestörande poster*):</label><br>
+      <label for="fname">Underhållsutrymme (alla underhålls- och reparationskostnader, exklusive endast jämförelsestörande poster*) (tusentals kronor):</label><br>
       <input type="text" id="underhållsutrymme" name="underhållsutrymme"><br>
-      <label for="fname">Driftskostnad** (alla löpande utgifter inklusive fastighetsskatt och arvoden, men exklusive räntekostnader, investeringar, underhåll och reparationer):</label><br>
-      <input type="text" id="driftskostnad" name="driftskostnad"><br><br>
+      <label for="fname">Driftskostnad (alla löpande utgifter inklusive fastighetsskatt och arvoden, men exklusive räntekostnader, investeringar, underhåll och reparationer) (tusentals kronor):</label><br>
+      <input type="text" id="driftskostnad" name="driftskostnad"><br>
+      <label for="fname">Amortering (tusentals kronor):</label><br>
+      <input type="text" id="amortering2" name="amortering2"><br>
+      <label for="fname">Finansiella kostnader (tusentals kronor):</label><br>
+      <input type="text" id="finansiellaKostnader2" name="finansiellaKostnader2"><br><br>
       <input type="submit" value="Analysera">
     </form>
+
+    <div id="nyckelTalGraphs"></div>
 
     <p>
       Dessa nyckeltal och grafik ger en överblick av bostadsrättsföreningens ekonomi. Man bör studera ett antal årsredovisningar, för att se trender och avvik. Dessutom behöver man ta reda på underhållsbehov och speciellt större kommande underhåll, reparationer och investeringar enligt föreningens underhållsplan och allmänna prognostisering.

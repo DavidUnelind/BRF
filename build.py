@@ -10,15 +10,12 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "dljsaklqk24e21cjn!Ew@@dsa5"
 
-result = "0"
-
 @app.route("/", methods=["GET"])
 def home():
     return render_template("home.html")
 
 @app.route("/post", methods=["POST"])
 def waterfall():
-    global result
     KPIs = json.loads(request.data.decode())
     totalKostnad = float(KPIs["totalKostnad"])
     resultat = float(KPIs["resultat"])
@@ -27,7 +24,6 @@ def waterfall():
     avskrivning = float(KPIs["avskrivning"])
     amortering = float(KPIs["amortering"])
     avsättning = float(KPIs["avsättning"])
-    result = resultat
     charts.generateWaterfall(totalKostnad, 
                           resultat, 
                           finansiellaKostnader, 
@@ -40,20 +36,23 @@ def waterfall():
 
 @app.route("/postNyckelTal", methods=["POST"])
 def nyckelTal():
-    global result
-    KPIs = json.loads(request.data.decode())
-    totalLån = float(KPIs["totalLån"])
-    totalYta = float(KPIs["totalYta"])
-    boarea = float(KPIs["boarea"])
-    intäkt = float(KPIs["intäkt"])
-    underhållsutrymme = float(KPIs["underhållsutrymme"])
-    driftskostnad = float(KPIs["driftskostnad"])
-    charts.generateNyckeltal(totalLån, 
+    nyckelTalKPI = json.loads(request.data.decode())
+    totalLån = float(nyckelTalKPI["totalLån"])
+    totalYta = float(nyckelTalKPI["totalYta"])
+    boarea = float(nyckelTalKPI["boarea"])
+    intäkt = float(nyckelTalKPI["intäkt"])
+    underhållsutrymme = float(nyckelTalKPI["underhållsutrymme"])
+    driftskostnad = float(nyckelTalKPI["driftskostnad"])
+    amortering2 = float(nyckelTalKPI["amortering2"])
+    finansiellaKostnader2 = float(nyckelTalKPI["finansiellaKostnader2"])
+    charts.generateNyckelTal(totalLån, 
                           totalYta, 
                           boarea, 
                           intäkt,
                           underhållsutrymme,
-                          driftskostnad)
+                          driftskostnad,
+                          amortering2,
+                          finansiellaKostnader2)
 
     return "Grafer skapas"
 
@@ -63,7 +62,7 @@ if __name__ == "__main__":
 
 @app.route("/get", methods=["GET"])
 def getResult():
-    global result
+    result = 0
     return str(result)
 
 if __name__ == "__main__":

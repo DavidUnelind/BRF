@@ -18,3 +18,12 @@ Jämförelsestörande kostnader* (tusentals kronor): 0
 Avskrivning (tusentals kronor): 965  
 Amortering (tusentals kronor): 900  
 Avsättning till underhållsplan (tusentals kronor): 210  
+
+27000
+5300
+3856
+4100
+2000
+900
+900
+784

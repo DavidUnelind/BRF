@@ -66,37 +66,176 @@ def generateWaterfall(totalKostnad,
             showlegend = True,
             margin=dict(l=30, r=30, t=30, b=30)
     )
-    waterfall.write_image("static/images/fig1.png")
+    waterfall.write_image("static/images/waterfall.png")
 
-def test():
-    fig = go.Figure(go.Waterfall(
-        name = "20", orientation = "v",
-        measure = ["relative", "relative", "total", "relative", "relative", "total"],
-        x = ["Sales", "Consulting", "Net revenue", "Purchases", "Other expenses", "Profit before tax"],
-        textposition = "outside",
-        text = ["+60", "+80", "", "-40", "-20", "Total"],
-        y = [60, 80, 0, -40, -20, 0],
-        connector = {"line":{"color":"rgb(63, 63, 63)"}},
-    ))
-
-    fig.update_layout(
-            title = "Profit and loss statement 2018",
-            showlegend = True
-    )
-
-    fig.show()
-
-
-    fig1 = go.Figure(go.Indicator(
+def generateNyckelTal(totalLån, 
+                          totalYta, 
+                          boarea, 
+                          intäkt,
+                          underhållsutrymme,
+                          driftskostnad,
+                          amortering,
+                          finansiellaKostnader):
+    
+    lånPerkvmTotalYta = go.Figure(go.Indicator(
         mode = "gauge+number",
-        value = 270,
-        domain = {'x': [0, 1], 'y': [0, 1]},
-        title = {'text': "Speed"}))
+        value = totalLån * 1000 / totalYta,
+        domain = {"x": [0, 1], "y": [0, 1]},
+        number = {
+            "valueformat": ".0f"
+        },
+        gauge = {
+        "axis": {"range": [0, 15000], "tickwidth": 1, "tickcolor": "darkblue"},
+        'bar': {'color': "black", "thickness" : 0.1},
+        "bgcolor": "white",
+        "borderwidth": 2,
+        "bordercolor": "gray",
+        "steps": [
+            {"range": [0, 5000], "color": "green"},
+            {"range": [5000, 10000], "color": "yellow"},
+            {"range": [10000, 15000], "color": "red"}]},
+        title = {"text": "Lån per kvm totalyta (kr/kvm)"}))
+    lånPerkvmTotalYta.write_image("static/images/lånPerkvmTotalYta.png")
 
-    fig1.show()
+    totalYtaToBoareaFactor = totalYta / boarea
+    lånPerkvmBoarea = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = totalLån * 1000 / boarea,
+        domain = {"x": [0, 1], "y": [0, 1]},
+        number = {
+            "valueformat": ".0f"
+        },
+        gauge = {
+        "axis": {"range": [0, 15000 * totalYtaToBoareaFactor], "tickwidth": 1, "tickcolor": "darkblue"},
+        'bar': {'color': "black", "thickness" : 0.1},
+        "bgcolor": "white",
+        "borderwidth": 2,
+        "bordercolor": "gray",
+        "steps": [
+            {"range": [0, 5000 * totalYtaToBoareaFactor], "color": "green"},
+            {"range": [5000 * totalYtaToBoareaFactor, 10000 * totalYtaToBoareaFactor], "color": "yellow"},
+            {"range": [10000 * totalYtaToBoareaFactor, 15000 * totalYtaToBoareaFactor], "color": "red"}]},
+        title = {"text": "Lån per kvm boarea (kr/kvm)"}))
+    lånPerkvmBoarea.write_image("static/images/lånPerkvmBoarea.png")
 
-    fig2 = go.Figure(
-        data=[go.Bar(y=[2, 1, 3])],
-        layout_title_text="A Figure Displayed with the 'svg' Renderer"
-    )
-    fig2.show(renderer="svg")
+    skuldkvot = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = totalLån / intäkt,
+        domain = {"x": [0, 1], "y": [0, 1]},
+        number = {
+            "valueformat": ".1f"
+        },
+        gauge = {
+        "axis": {"range": [0, 25], "tickwidth": 1, "tickcolor": "darkblue"},
+        'bar': {'color': "black", "thickness" : 0.1},
+        "bgcolor": "white",
+        "borderwidth": 2,
+        "bordercolor": "gray",
+        "steps": [
+            {"range": [0, 10], "color": "green"},
+            {"range": [10, 20], "color": "yellow"},
+            {"range": [20, 25], "color": "red"}]},
+        title = {"text": "Skuldkvot (lån/intäkt)"}))
+    skuldkvot.write_image("static/images/skuldkvot.png")
+
+    UHutrymmeProcent = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = underhållsutrymme / intäkt,
+        domain = {"x": [0, 1], "y": [0, 1]},
+        number = {
+            "valueformat": ".0%"
+        },
+        gauge = {
+        "axis": {"range": [0, 0.75], "tickwidth": 1, "tickcolor": "darkblue", "tickformat": ".0%"},
+        'bar': {'color': "black", "thickness" : 0.1},
+        "bgcolor": "white",
+        "borderwidth": 2,
+        "bordercolor": "gray",
+        "steps": [
+            {"range": [0, 0.25], "color": "red"},
+            {"range": [0.25, 0.50], "color": "yellow"},
+            {"range": [0.50, 0.75], "color": "green"}]},
+        title = {"text": "Underhålls & amorteringsutrymme i % av intäkt"}))
+    UHutrymmeProcent.write_image("static/images/UHutrymmeProcent.png")
+
+    UHutrymmePerTotalYta = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = underhållsutrymme * 1000 / totalYta,
+        domain = {"x": [0, 1], "y": [0, 1]},
+        number = {
+            "valueformat": ".0f"
+        },
+        gauge = {
+        "axis": {"range": [0, 500], "tickwidth": 1, "tickcolor": "darkblue"},
+        'bar': {'color': "black", "thickness" : 0.1},
+        "bgcolor": "white",
+        "borderwidth": 2,
+        "bordercolor": "gray",
+        "steps": [
+            {"range": [0, 150], "color": "red"},
+            {"range": [150, 250], "color": "yellow"},
+            {"range": [250, 500], "color": "green"}]},
+        title = {"text": "Underhålls & amorteringsutrymme per kvm totalyta (kr/kvm)"}))
+    UHutrymmePerTotalYta.write_image("static/images/UHutrymmePerTotalYta.png")
+
+    driftskostnadPerKvm = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = driftskostnad * 1000 / boarea,
+        domain = {"x": [0, 1], "y": [0, 1]},
+        number = {
+            "valueformat": ".0f"
+        },
+        gauge = {
+        "axis": {"range": [0, 700], "tickwidth": 1, "tickcolor": "darkblue"},
+        'bar': {'color': "black", "thickness" : 0.1},
+        "bgcolor": "white",
+        "borderwidth": 2,
+        "bordercolor": "gray",
+        "steps": [
+            {"range": [0, 375], "color": "green"},
+            {"range": [375, 550], "color": "yellow"},
+            {"range": [550, 700], "color": "red"}]},
+        title = {"text": "Driftskostnad per boarea (kr/kvm)"}))
+    driftskostnadPerKvm.write_image("static/images/driftskostnadPerKvm.png")
+
+    finansiellUtgift = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = (amortering + finansiellaKostnader) / totalLån,
+        domain = {"x": [0, 1], "y": [0, 1]},
+        number = {
+            "valueformat": ".0%"
+        },
+        gauge = {
+        "axis": {"range": [0, 0.12], "tickwidth": 1, "tickcolor": "darkblue", "tickformat": ".0%"},
+        'bar': {'color': "black", "thickness" : 0.1},
+        "bgcolor": "white",
+        "borderwidth": 2,
+        "bordercolor": "gray",
+        "steps": [
+            {"range": [0, 0.04], "color": "red"},
+            {"range": [0.04, 0.05], "color": "yellow"},
+            {"range": [0.05, 0.07], "color": "green"},
+            {"range": [0.07, 0.08], "color": "yellow"},
+            {"range": [0.08, 0.12], "color": "red"}]},
+        title = {"text": "Finansiell utgift i % av lån"}))
+    finansiellUtgift.write_image("static/images/finansiellUtgift.png")
+
+    räntekostnadProcent = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = finansiellaKostnader / intäkt,
+        domain = {"x": [0, 1], "y": [0, 1]},
+        number = {
+            "valueformat": ".0%"
+        },
+        gauge = {
+        "axis": {"range": [0, 0.75], "tickwidth": 1, "tickcolor": "darkblue", "tickformat": ".0%"},
+        'bar': {'color': "black", "thickness" : 0.1},
+        "bgcolor": "white",
+        "borderwidth": 2,
+        "bordercolor": "gray",
+        "steps": [
+            {"range": [0, 0.25], "color": "green"},
+            {"range": [0.25, 0.5], "color": "yellow"},
+            {"range": [0.5, 0.75], "color": "red"}]},
+        title = {"text": "Räntekostnad i % av intäkt"}))
+    räntekostnadProcent.write_image("static/images/räntekostnadProcent.png")
