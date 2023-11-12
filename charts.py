@@ -1,21 +1,72 @@
 import plotly.graph_objects as go
 
-def generateGraphs(x):
-    fig1 = go.Figure(go.Waterfall(
-        name = "20", orientation = "v",
-        measure = ["relative", "relative", "total", "relative", "relative", "total"],
-        x = ["Sales", "Consulting", "Net revenue", "Purchases", "Other expenses", "Profit before tax"],
+def generateWaterfall(totalKostnad, 
+                          resultat, 
+                          finansiellaKostnader, 
+                          jämförelsestörande,
+                          avskrivning,
+                          amortering,
+                          avsättning):
+    intäkter = totalKostnad + resultat
+    resultEfterFinansella = resultat - finansiellaKostnader
+    likviditet = resultEfterFinansella - jämförelsestörande + avskrivning - amortering
+    referensAvgiftsUttag = likviditet - avsättning
+    waterfall = go.Figure(go.Waterfall(
+        name = "Tusentals kronor", orientation = "v",
+        measure = ["relative", #Relative (delta) eller total
+                   "relative", 
+                   "total", 
+                   "relative", 
+                   "total", 
+                   "relative",
+                   "relative",
+                   "relative",
+                   "total",
+                   "relative",
+                   "total"],
+        x = ["Intäkter", #Texten under
+             "Totala kostnader", 
+             "Resultat, exklusive finansiella kostnader", 
+             "Finansiella kostnader", 
+             "Resultat efter finansiella kostnader", 
+             "Jämförelsestörande kostnader",
+             "Avskrivning",
+             "Amortering",
+             "Likviditet",
+             "Avsättning till underhållsplan",
+             "Referens avgiftsuttag"],
         textposition = "outside",
-        text = [x*4, x*5, "", x*3, x*2, "Total"],
-        y = [x*4, x*5, 0, -x*3, -x*2, 0],
+        text = [int(intäkter), #Värdet som står ovanför/under
+                int(-totalKostnad), 
+                int(resultat), 
+                int(-finansiellaKostnader), 
+                int(resultEfterFinansella), 
+                int(jämförelsestörande), 
+                int(avskrivning), 
+                int(-amortering), 
+                int(likviditet), 
+                int(-avsättning), 
+                int(referensAvgiftsUttag)], 
+        y = [intäkter, #Värdet
+             -totalKostnad, 
+             0, 
+             -finansiellaKostnader, 
+             0, 
+             -jämförelsestörande, 
+             avskrivning, 
+             -amortering, 
+             0, 
+             -avsättning, 
+             0],
         connector = {"line":{"color":"rgb(63, 63, 63)"}},
     ))
 
-    fig1.update_layout(
-            title = "Profit and loss statement 2018",
-            showlegend = True
+    waterfall.update_layout(
+            title = "Analys ekonomi BRF ",
+            showlegend = True,
+            margin=dict(l=30, r=30, t=30, b=30)
     )
-    fig1.write_image("static/images/fig1.png")
+    waterfall.write_image("static/images/fig1.png")
 
 def test():
     fig = go.Figure(go.Waterfall(

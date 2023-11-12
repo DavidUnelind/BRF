@@ -4,18 +4,28 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="UTF-8">
     <title>My Web Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="static/styles.css">
     <script type="text/javascript">
         function Submit() {
-            var from_addr = document.getElementById('faddr').value;
-            var to_addr = document.getElementById('taddr').value;
-            var data = { "faddr": from_addr,
-                       "taddr": to_addr,
+            var totalKostnad = document.getElementById("totalKostnad").value;
+            var resultat = document.getElementById("resultat").value;
+            var finansiellaKostnader = document.getElementById("finansiellaKostnader").value;
+            var jämförelsestörande = document.getElementById("jämförelsestörande").value;
+            var avskrivning = document.getElementById("avskrivning").value;
+            var amortering = document.getElementById("amortering").value;
+            var avsättning = document.getElementById("avsättning").value;
+            var data = { "totalKostnad": totalKostnad,
+                       "resultat": resultat,
+                       "finansiellaKostnader": finansiellaKostnader,
+                       "jämförelsestörande": jämförelsestörande,
+                       "avskrivning": avskrivning,
+                       "amortering": amortering,
+                       "avsättning": avsättning,
                      }
           var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                callout();
+                //callout();
                 insertImage()
               try{
                 var resp = this.responseText;
@@ -30,9 +40,41 @@
         }
       </script>
       <script type="text/javascript">
+        function SubmitNyckelTal() {
+            var totalLån = document.getElementById("totalLån").value;
+            var totalYta = document.getElementById("totalYta").value;
+            var boarea = document.getElementById("boarea").value;
+            var intäkt = document.getElementById("intäkt").value;
+            var underhållsutrymme = document.getElementById("underhållsutrymme").value;
+            var driftskostnad = document.getElementById("driftskostnad").value;
+            var data = { "totalLån": totalLån,
+                       "totalYta": totalYta,
+                       "boarea": boarea,
+                       "intäkt": intäkt,
+                       "underhållsutrymme": underhållsutrymme,
+                       "driftskostnad": driftskostnad,
+                     }
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //callout();
+                //insertImageNyckelTal()
+              try{
+                var resp = this.responseText;
+              }
+              catch(err){
+                alert(this.responseText);
+              }
+            }
+          };
+          xhttp.open("POST", "http://127.0.0.1:5000/postNyckelTal", true);
+          xhttp.send(JSON.stringify(data));
+        }
+      </script>
+      <script type="text/javascript">
         function callout() {
             $.ajax({
-            url: 'http://127.0.0.1:5000/get'
+            url: "http://127.0.0.1:5000/get"
             })
             .done(function (server_response) {
             var result = server_response
@@ -54,20 +96,65 @@
     </script>
 </head>
 <body>
-    <header>
-        <h1>Hello</h1>
-    </header>
-    <p>Fyll i KPIs</p>
+    <h1>Är din bostadsrättsföreningens ekonomi i balans?</h1>
+    <h1>Vågar du köpa en bostadsrätt i denna förening?</h1> <br>
+    <h2>Fyll i följande information från bostadsrättsföreningens årsredovisning</h2>
+    
+    <p>Denna “brygga” av intäkter, kostnader, utgifter mm ger en indikation på om ekonomin i balans. 
+      Bryggan går från vänster till höger från Resultaträkningen till Balansräkningen och påverkan på Kassaflödet och ger därmed en indikation om en avgiftshöjning krävs.</p>
+    
     <form action="javascript:Submit()">
-      <label for="fname">Första tal:</label><br>
-      <input type="text" id="faddr" name="faddr"><br>
-      <label for="lname">Andra tal:</label><br>
-      <input type="text" id="taddr" name="taddr"><br><br>
-      <input type="submit" value="Beräkna">
+      <label for="fname">Totala kostnader (tusentals kronor):</label><br>
+      <input type="text" id="totalKostnad" name="totalKostnad"><br>
+      <label for="fname">Resultat, exklusive finansiella kostnader (tusentals kronor):</label><br>
+      <input type="text" id="resultat" name="resultat"><br>
+      <label for="fname">Finansiella kostnader (tusentals kronor):</label><br>
+      <input type="text" id="finansiellaKostnader" name="finansiellaKostnader"><br>
+      <label for="fname">Jämförelsestörande kostnader* (tusentals kronor):</label><br>
+      <input type="text" id="jämförelsestörande" name="jämförelsestörande"><br>
+      <label for="fname">Avskrivning (tusentals kronor):</label><br>
+      <input type="text" id="avskrivning" name="avskrivning"><br>
+      <label for="fname">Amortering (tusentals kronor):</label><br>
+      <input type="text" id="amortering" name="amortering"><br>
+      <label for="fname">Avsättning till underhållsplan (tusentals kronor):</label><br>
+      <input type="text" id="avsättning" name="avsättning"><br><br>
+      <input type="submit" value="Analysera">
     </form>
 
-    <p id = "result"> Result: </p>
+    <!-- <p id = "result"> Result: </p> -->
     <div id="graphs"></div>
-    
+
+    <p> Stöd för analys: Referens avgiftsuttag bör vara klart över 0 kkr, annars skall en avgiftshöjning beaktas.
+      *Jämförelsestörande kostnader är tex större engångskostnader såsom investeringar och större underhåll/reparation enligt underhållsplan.
+      Notera att en undersökning av föreningens långsiktiga underhållsplan är ett viktigt komplement i denna analys. 
+    </p> <br>
+
+    <form action="javascript:SubmitNyckelTal()">
+      <label for="fname">Totala lånesumma (tusentals kronor):</label><br>
+      <input type="text" id="totalLån" name="totalLån"><br>
+      <label for="fname">Totalyta, inklusive (kvadratmeter):</label><br>
+      <input type="text" id="totalYta" name="totalYta"><br>
+      <label for="fname">Boarea (kvadratmeter):</label><br>
+      <input type="text" id="boarea" name="boarea"><br>
+      <label for="fname">Intäkt (tusentals kronor):</label><br>
+      <input type="text" id="intäkt" name="intäkt"><br>
+      <label for="fname">Underhållsutrymme (alla underhålls- och reparationskostnader, exklusive endast jämförelsestörande poster*):</label><br>
+      <input type="text" id="underhållsutrymme" name="underhållsutrymme"><br>
+      <label for="fname">Driftskostnad** (alla löpande utgifter inklusive fastighetsskatt och arvoden, men exklusive räntekostnader, investeringar, underhåll och reparationer):</label><br>
+      <input type="text" id="driftskostnad" name="driftskostnad"><br><br>
+      <input type="submit" value="Analysera">
+    </form>
+
+    <p>
+      Dessa nyckeltal och grafik ger en överblick av bostadsrättsföreningens ekonomi. Man bör studera ett antal årsredovisningar, för att se trender och avvik. Dessutom behöver man ta reda på underhållsbehov och speciellt större kommande underhåll, reparationer och investeringar enligt föreningens underhållsplan och allmänna prognostisering.
+      Om föreningen har en betydande underhållsskuld och stora kommande investeringar, kan det i sig helt ändra slutsatsen från dessa nyckeltal. 
+    </p>
+
+    Ansvarsfriskrivning.
+    <ul>
+      <li>Denna sida ger inte finansiella råd eller råd kring investeringar av bostäder, inklusive bostadsrätter. Bakomliggande formler och begrepp bygger på väl etablerad teori, men vi kan inte garantera att fel inte kan förekomma. </li>
+      <li>Vårt mål är att genom tydliga definitioner underlätta användarens inmatning av data, men kan inte garantera att missförstånd kan ske utifrån den specifika bostadsrättsförening och årsredovisning som användaren utgår från. </li>
+      <li>Investeringar i bostäder innebär risk och det är viktigt att användaren gör sin egen analys. Vi ger inte några investeringsråd eller rekommendationer, och all information som tillhandahålls är endast avsedd för allmän information och utbildning. </li>
+    </ul> 
 </body>
 </html>
