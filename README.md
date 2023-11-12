@@ -19,11 +19,11 @@ Avskrivning (tusentals kronor): 965
 Amortering (tusentals kronor): 900  
 Avsättning till underhållsplan (tusentals kronor): 210  
 
-27000
-5300
-3856
-4100
-2000
-900
-900
-784
+Totala lånesumma (tusentals kronor): 27000
+Totalyta, inklusive (kvadratmeter): 5300
+Boarea (kvadratmeter): 3856
+Intäkt (tusentals kronor): 4100
+Underhållsutrymme (alla underhålls- och reparationskostnader, exklusive endast jämförelsestörande poster*) (tusentals kronor): 2000
+Driftskostnad (alla löpande utgifter inklusive fastighetsskatt och arvoden, men exklusive räntekostnader, investeringar, underhåll och reparationer) (tusentals kronor): 900
+Amortering (tusentals kronor): 900
+Finansiella kostnader (tusentals kronor): 784
